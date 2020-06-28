@@ -41,7 +41,7 @@
 	},
 	"np": {
 		"publish": false,
-		"releaseDraft": false
+		"releaseDraft": true
 	},
 	"build": {
 		"appId": "com.akshaybaweja.bio-signal-visualizer",
