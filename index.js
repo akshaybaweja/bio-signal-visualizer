@@ -1,8 +1,15 @@
 'use strict';
 const path = require('path');
-const {app, BrowserWindow, Menu} = require('electron');
+const {
+	app,
+	BrowserWindow,
+	Menu,
+	ipcMain
+} = require('electron');
 /// const {autoUpdater} = require('electron-updater');
-const {is} = require('electron-util');
+const {
+	is
+} = require('electron-util');
 const unhandled = require('electron-unhandled');
 const debug = require('electron-debug');
 const contextMenu = require('electron-context-menu');
@@ -34,8 +41,12 @@ const createMainWindow = async () => {
 	const win = new BrowserWindow({
 		title: app.name,
 		show: false,
-		width: 600,
-		height: 400
+		minHeight: 600,
+		minWidth: 800,
+		fullscreen: true,
+		webPreferences: {
+			devTools: true
+		}
 	});
 
 	win.on('ready-to-show', () => {
@@ -85,6 +96,6 @@ app.on('activate', () => {
 	Menu.setApplicationMenu(menu);
 	mainWindow = await createMainWindow();
 
-	const favoriteAnimal = config.get('favoriteAnimal');
-	mainWindow.webContents.executeJavaScript(`document.querySelector('header p').textContent = 'Your favorite animal is ${favoriteAnimal}'`);
+	const versionNumber = config.get('appVersion');
+	mainWindow.webContents.executeJavaScript(`document.querySelector('#version-number').textContent = '${versionNumber}'`);
 })();

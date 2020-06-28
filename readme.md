@@ -1,6 +1,6 @@
 # Bio Signal Visualizer
 
-> Bio Signal Vidualizer App
+> Bio Signal Visualizer App
 
 
 ## Install

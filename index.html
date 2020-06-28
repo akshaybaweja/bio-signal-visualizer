@@ -1,18 +1,47 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>bio signal visualizer</title>
-		<link rel="stylesheet" href="index.css">
-	</head>
-	<body>
-		<div class="container">
-			<header>
-				<h1>bio signal visualizer</h1>
-				<p></p>
-			</header>
-			<section class="main"></section>
-			<footer></footer>
+
+<head>
+	<meta charset="utf-8">
+	<title>Bio Signal Visualizer</title>
+	<link rel="stylesheet" href="index.css">
+	<!-- Load in the d3 library -->
+	<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+
+<body>
+	<main class="container">
+		<header>
+			<h1>Bio Signal Visualizer</h1>
+			<h5>version <span id="version-number"></span></h5>
+		</header>
+		<div class="main-content">
+			<div id="drag-n-drop-section">
+				<h1>Click or Drag and Drop CSV file to start</h1>
+				<input type="file" id="drag-n-drop-file-input" accept = ".csv" hidden>
+			</div>
+			<!-- The Modal -->
+			<div id="errorModal" class="modal">
+				<!-- Modal content -->
+				<div class="modal-content">
+					<div class="modal-header">
+						<p id="modal-header-text"></p>
+						<span class="close" id="closeErrorModal">&times;</span>
+					</div>
+					<div class="modal-body" id="modal-body-text"></div>
+					<div class="modal-footer">
+						<!-- <h3>Modal Footer</h3> -->
+					</div>
+				</div>
+			</div>
+
+			<div id="visualizationWindow">
+
+			</div>
 		</div>
-	</body>
+		<footer>Copyright Parsons School of Design &copy; 2020</footer>
+	</main>
+</body>
+<script src="./static/scripts/index.js"></script>
+
 </html>
