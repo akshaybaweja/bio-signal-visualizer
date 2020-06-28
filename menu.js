@@ -93,7 +93,7 @@ const debugSubmenu = [
 const macosTemplate = [
 	appMenu([
 		{
-			label: 'Preferences…',
+			label: 'Preferences',
 			accelerator: 'Command+,',
 			click() {
 				showPreferences();
@@ -103,12 +103,12 @@ const macosTemplate = [
 	{
 		role: 'fileMenu',
 		submenu: [
-			{
-				label: 'Custom'
-			},
-			{
-				type: 'separator'
-			},
+			// {
+			// 	label: 'Custom'
+			// },
+			// {
+			// 	type: 'separator'
+			// },
 			{
 				role: 'close'
 			}
@@ -117,9 +117,9 @@ const macosTemplate = [
 	{
 		role: 'editMenu'
 	},
-	{
-		role: 'viewMenu'
-	},
+	// {
+	// 	role: 'viewMenu'
+	// },
 	{
 		role: 'windowMenu'
 	},
@@ -134,12 +134,12 @@ const otherTemplate = [
 	{
 		role: 'fileMenu',
 		submenu: [
-			{
-				label: 'Custom'
-			},
-			{
-				type: 'separator'
-			},
+			// {
+			// 	label: 'Custom'
+			// },
+			// {
+			// 	type: 'separator'
+			// },
 			{
 				label: 'Settings',
 				accelerator: 'Control+,',
@@ -158,9 +158,9 @@ const otherTemplate = [
 	{
 		role: 'editMenu'
 	},
-	{
-		role: 'viewMenu'
-	},
+	// {
+	// 	role: 'viewMenu'
+	// },
 	{
 		role: 'help',
 		submenu: helpSubmenu
