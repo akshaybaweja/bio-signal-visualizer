@@ -1,6 +1,6 @@
-# bio signal visualizer
+# Bio Signal Visualizer
 
-> My sublime app
+> Bio Signal Vidualizer App
 
 
 ## Install
