@@ -48,7 +48,8 @@
 		"appId": "com.akshaybaweja.bio-signal-visualizer",
 		"mac": {
 			"category": "public.app-category.utilities",
-			"darkModeSupport": false
+			"darkModeSupport": false,
+			"type": "development"
 		},
 		"dmg": {
 			"iconSize": 160,
