@@ -95,4 +95,5 @@ app.on('activate', () => {
 	await app.whenReady();
 	Menu.setApplicationMenu(menu);
 	mainWindow = await createMainWindow();
+	mainWindow.webContents.executeJavaScript(`document.querySelector('#version-number').textContent = '${app.getVersion()}'`);
 })();
