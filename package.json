@@ -23,8 +23,8 @@
 		"dist-nolinux": "electron-builder --macos --windows"
 	},
 	"dependencies": {
-		"electron-debug": "^3.0.0",
 		"electron-context-menu": "^0.15.0",
+		"electron-debug": "^3.0.0",
 		"electron-store": "^5.1.0",
 		"electron-unhandled": "^3.0.0",
 		"electron-updater": "^4.0.6",

@@ -1,6 +1,13 @@
 'use strict';
 const path = require('path');
-const {app, Menu, shell} = require('electron');
+
+const {
+	app,
+	Menu,
+	shell,
+	BrowserWindow
+} = require('electron');
+
 const {
 	is,
 	appMenu,
@@ -13,6 +20,23 @@ const config = require('./config');
 
 const showPreferences = () => {
 	// Show the app's preferences here
+	// Preferences are -
+	// Change line color
+	// Change line stroke width
+	// Define axis name: x-axis and y-axis
+};
+
+const generateNewCanvas = () => {
+	// Refresh Page
+	const currentWindow = BrowserWindow.getFocusedWindow();
+	currentWindow.reload();
+	currentWindow.webContents.executeJavaScript(`document.querySelector('#version-number').textContent = '${app.getVersion()}'`);
+};
+
+const export2PDF = () => {
+	// Export to PDF
+	const currentWindow = BrowserWindow.getFocusedWindow();
+	currentWindow.webContents.send('exportScreenshot', 'taadaa');
 };
 
 const helpSubmenu = [
@@ -25,7 +49,7 @@ const helpSubmenu = [
 		url: 'https://github.com/akshaybaweja/bio-signal-visualizer'
 	}),
 	{
-		label: 'Report an Issue…',
+		label: 'Report an Issue',
 		click() {
 			const body = `
 <!-- Please succinctly describe your issue and steps to reproduce it. -->
@@ -45,81 +69,84 @@ ${debugInfo()}`;
 ];
 
 if (!is.macos) {
-	helpSubmenu.push(
+	helpSubmenu.push({
+		type: 'separator'
+	},
+	aboutMenuItem({
+		icon: path.join(__dirname, 'static', 'icon.png'),
+		text: 'Created by Akshay Baweja'
+	}));
+}
+
+const debugSubmenu = [{
+	label: 'Show Settings',
+	click() {
+		config.openInEditor();
+	}
+},
+{
+	label: 'Show App Data',
+	click() {
+		shell.openItem(app.getPath('userData'));
+	}
+},
+{
+	type: 'separator'
+},
+{
+	label: 'Delete Settings',
+	click() {
+		config.clear();
+		app.relaunch();
+		app.quit();
+	}
+},
+{
+	label: 'Delete App Data',
+	click() {
+		shell.moveItemToTrash(app.getPath('userData'));
+		app.relaunch();
+		app.quit();
+	}
+}];
+
+const macosTemplate = [
+	appMenu([{
+		label: 'Preferences',
+		accelerator: 'Command+,',
+		click() {
+			showPreferences();
+		}
+	}]),
+	{
+		role: 'fileMenu',
+		submenu: [{
+			label: 'New Canvas',
+			accelerator: 'Command+N',
+			click() {
+				generateNewCanvas();
+			}
+		},
 		{
 			type: 'separator'
 		},
-		aboutMenuItem({
-			icon: path.join(__dirname, 'static', 'icon.png'),
-			text: 'Created by Akshay Baweja'
-		})
-	);
-}
-
-const debugSubmenu = [
-	{
-		label: 'Show Settings',
-		click() {
-			config.openInEditor();
-		}
-	},
-	{
-		label: 'Show App Data',
-		click() {
-			shell.openItem(app.getPath('userData'));
-		}
-	},
-	{
-		type: 'separator'
-	},
-	{
-		label: 'Delete Settings',
-		click() {
-			config.clear();
-			app.relaunch();
-			app.quit();
-		}
-	},
-	{
-		label: 'Delete App Data',
-		click() {
-			shell.moveItemToTrash(app.getPath('userData'));
-			app.relaunch();
-			app.quit();
-		}
-	}
-];
-
-const macosTemplate = [
-	appMenu([
 		{
-			label: 'Preferences',
-			accelerator: 'Command+,',
+			label: 'Save as JPG',
+			accelerator: 'Command+S',
 			click() {
-				showPreferences();
+				export2PDF();
 			}
-		}
-	]),
-	{
-		role: 'fileMenu',
-		submenu: [
-			// {
-			// 	label: 'Custom'
-			// },
-			// {
-			// 	type: 'separator'
-			// },
-			{
-				role: 'close'
-			}
-		]
+		},
+		{
+			type: 'separator'
+		},
+		{
+			role: 'close'
+		}]
 	},
 	{
 		role: 'editMenu'
 	},
-	// {
-	// 	role: 'viewMenu'
-	// },
 	{
 		role: 'windowMenu'
 	},
@@ -130,42 +157,49 @@ const macosTemplate = [
 ];
 
 // Linux and Windows
-const otherTemplate = [
-	{
-		role: 'fileMenu',
-		submenu: [
-			// {
-			// 	label: 'Custom'
-			// },
-			// {
-			// 	type: 'separator'
-			// },
-			{
-				label: 'Settings',
-				accelerator: 'Control+,',
-				click() {
-					showPreferences();
-				}
-			},
-			{
-				type: 'separator'
-			},
-			{
-				role: 'quit'
-			}
-		]
+const otherTemplate = [{
+	role: 'fileMenu',
+	submenu: [{
+		label: 'New Canvas',
+		accelerator: 'Control+N',
+		click() {
+			generateNewCanvas();
+		}
 	},
 	{
-		role: 'editMenu'
+		type: 'separator'
 	},
-	// {
-	// 	role: 'viewMenu'
-	// },
 	{
-		role: 'help',
-		submenu: helpSubmenu
-	}
-];
+		label: 'Save as JPG',
+		accelerator: 'Control+S',
+		click() {
+			export2PDF();
+		}
+	},
+	{
+		type: 'separator'
+	},
+	{
+		label: 'Settings',
+		accelerator: 'Control+,',
+		click() {
+			showPreferences();
+		}
+	},
+	{
+		type: 'separator'
+	},
+	{
+		role: 'quit'
+	}]
+},
+{
+	role: 'editMenu'
+},
+{
+	role: 'help',
+	submenu: helpSubmenu
+}];
 
 const template = process.platform === 'darwin' ? macosTemplate : otherTemplate;
 

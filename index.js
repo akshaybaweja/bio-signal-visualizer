@@ -3,9 +3,14 @@ const path = require('path');
 const {
 	app,
 	BrowserWindow,
-	Menu
+	Menu,
+	screen,
+	ipcMain,
+	dialog
 } = require('electron');
-const {autoUpdater} = require('electron-updater');
+const {
+	autoUpdater
+} = require('electron-updater');
 const {
 	is
 } = require('electron-util');
@@ -14,13 +19,17 @@ const debug = require('electron-debug');
 const contextMenu = require('electron-context-menu');
 // X const config = require('./config');
 const menu = require('./menu');
+const fs = require('fs');
 
 unhandled();
 debug();
 contextMenu();
 
-const appID = "com.akshaybaweja.bio-signal-visualizer";
+const appID = 'com.akshaybaweja.bio-signal-visualizer';
 app.setAppUserModelId(appID);
+
+let w = 800;
+let h = 600;
 
 // Uncomment this before publishing your first version.
 // It's commented out as it throws an error if there are no published versions.
@@ -40,11 +49,15 @@ const createMainWindow = async () => {
 	const win = new BrowserWindow({
 		title: app.name,
 		show: false,
+		width: w,
+		height: h,
 		minHeight: 600,
 		minWidth: 800,
-		fullscreen: true,
+		fullscreenable: true,
 		webPreferences: {
-			devTools: true
+			devTools: true,
+			enableRemoteModule: true,
+			nodeIntegration: true
 		}
 	});
 
@@ -91,8 +104,30 @@ app.on('activate', () => {
 });
 
 (async () => {
-	await app.whenReady();
+	await app.whenReady().then(() => {
+		w = screen.getPrimaryDisplay().workAreaSize.width;
+		h = screen.getPrimaryDisplay().workAreaSize.height;
+	});
 	Menu.setApplicationMenu(menu);
 	mainWindow = await createMainWindow();
 	mainWindow.webContents.executeJavaScript(`document.querySelector('#version-number').textContent = '${app.getVersion()}'`);
 })();
+
+ipcMain.on('showErrorDialog', (event, arg) => {
+	dialog.showErrorBox(arg.title, arg.body);
+});
+
+ipcMain.on('ssBase64', (event, arg) => {
+	const buf = Buffer.from(arg, 'base64');
+	dialog.showSaveDialog(mainWindow, {
+		defaultPath: 'BioSignal-output.jpg'
+	}).then(data => {
+		if (data.canceled === false) {
+			fs.writeFile(data.filePath, buf, err => {
+				if (err) {
+					throw err;
+				}
+			});
+		}
+	});
+});
