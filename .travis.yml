@@ -5,6 +5,3 @@ node_js: '12'
 script:
   - npm test
   - npm run dist
-env:
-        - ELECTRON_CACHE=$HOME/.cache/electron
-        - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
