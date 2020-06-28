@@ -14,13 +14,13 @@ const debug = require('electron-debug');
 const contextMenu = require('electron-context-menu');
 // X const config = require('./config');
 const menu = require('./menu');
-const packageJson = require('./package.json');
+// X const packageJson = require('./package.json');
 
 unhandled();
 debug();
 contextMenu();
 
-app.setAppUserModelId(packageJson.build.appId);
+app.setAppUserModelId('com.akshaybaweja.bio-signal-visualizer');
 
 // Uncomment this before publishing your first version.
 // It's commented out as it throws an error if there are no published versions.

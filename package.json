@@ -17,12 +17,12 @@
 		"start": "electron .",
 		"pack": "electron-builder --dir",
 		"dist": "electron-builder --macos --linux --windows",
-		"release": "np"
+		"release": "np",
+		"dist-macos": "electron-builder --macos"
 	},
 	"dependencies": {
-		
-		"electron-context-menu": "^0.15.0",
 		"electron-debug": "^3.0.0",
+		"electron-context-menu": "^0.15.0",
 		"electron-store": "^5.1.0",
 		"electron-unhandled": "^3.0.0",
 		"electron-updater": "^4.0.6",
@@ -48,7 +48,8 @@
 		"appId": "com.akshaybaweja.bio-signal-visualizer",
 		"mac": {
 			"category": "public.app-category.utilities",
-			"darkModeSupport": false
+			"darkModeSupport": false,
+			"type": "development"
 		},
 		"dmg": {
 			"iconSize": 160,
