@@ -47,6 +47,10 @@
 	},
 	"build": {
 		"appId": "com.akshaybaweja.bio-signal-visualizer",
+		"publish":{
+			"provider": "github",
+			"releaseType": "release"
+		},
 		"mac": {
 			"category": "public.app-category.utilities",
 			"darkModeSupport": false,
@@ -75,7 +79,7 @@
 			"category": "Utility;Engineering"
 		},
 		"win": {
-			"target": "portable",
+			"target": "nsis",
 			"icon": "build/icon.ico",
 			"verifyUpdateCodeSignature": false
 		}
