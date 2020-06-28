@@ -5,7 +5,7 @@ const {
 	BrowserWindow,
 	Menu
 } = require('electron');
-const {autoUpdater} = require('electron-updater');
+// const {autoUpdater} = require('electron-updater');
 const {
 	is
 } = require('electron-util');
@@ -24,14 +24,14 @@ app.setAppUserModelId('com.akshaybaweja.bio-signal-visualizer');
 
 // Uncomment this before publishing your first version.
 // It's commented out as it throws an error if there are no published versions.
-if (!is.development) {
-	const TWENTY_FOUR_HOURS = 1000 * 60 * 60 * 24;
-	setInterval(() => {
-		autoUpdater.checkForUpdates();
-	}, TWENTY_FOUR_HOURS);
+// if (!is.development) {
+// 	const TWENTY_FOUR_HOURS = 1000 * 60 * 60 * 24;
+// 	setInterval(() => {
+// 		autoUpdater.checkForUpdates();
+// 	}, TWENTY_FOUR_HOURS);
 
-	autoUpdater.checkForUpdates();
-}
+// 	autoUpdater.checkForUpdates();
+// }
 
 // Prevent window from being garbage collected
 let mainWindow;
@@ -44,7 +44,7 @@ const createMainWindow = async () => {
 		minWidth: 800,
 		fullscreen: true,
 		webPreferences: {
-			devTools: false
+			devTools: true
 		}
 	});
 
