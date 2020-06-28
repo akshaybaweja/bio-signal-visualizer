@@ -1,14 +1,14 @@
 {
 	"name": "bio-signal-visualizer",
-	"productName": "bio signal visualizer",
+	"productName": "Bio Signal Visualizer",
 	"version": "0.0.0",
-	"description": "My sublime app",
+	"description": "Bio Signal Visualizer App",
 	"license": "MIT",
 	"repository": "akshaybaweja/bio-signal-visualizer",
 	"author": {
 		"name": "Akshay Baweja",
 		"email": "akshaybaweja.1996@gmail.com",
-		"url": "akshaybaweja.com"
+		"url": "https://akshaybaweja.com"
 	},
 	"scripts": {
 		"postinstall": "electron-builder install-app-deps",
@@ -46,8 +46,8 @@
 	"build": {
 		"appId": "com.akshaybaweja.bio-signal-visualizer",
 		"mac": {
-			"category": "public.app-category.social-networking",
-			"darkModeSupport": true
+			"category": "public.app-category.utilities",
+			"darkModeSupport": false
 		},
 		"dmg": {
 			"iconSize": 160,
@@ -69,7 +69,7 @@
 				"AppImage",
 				"deb"
 			],
-			"category": "Network;Chat"
+			"category": "Utility;Engineering"
 		}
 	}
 }
