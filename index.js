@@ -3,8 +3,7 @@ const path = require('path');
 const {
 	app,
 	BrowserWindow,
-	Menu,
-	ipcMain
+	Menu
 } = require('electron');
 const {autoUpdater} = require('electron-updater');
 const {
@@ -13,7 +12,7 @@ const {
 const unhandled = require('electron-unhandled');
 const debug = require('electron-debug');
 const contextMenu = require('electron-context-menu');
-const config = require('./config');
+// X const config = require('./config');
 const menu = require('./menu');
 const packageJson = require('./package.json');
 
