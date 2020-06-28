@@ -1,0 +1,11 @@
+"electron-builder": "^22.2.0"
+
+version changed to 22.2.0
+so no windows cconflict
+
+"publish": {
+    "provider": "github",
+    "releaseType": "release"
+},
+
+publishing to github
