@@ -18,7 +18,8 @@
 		"pack": "electron-builder --dir",
 		"dist": "electron-builder --macos --linux --windows",
 		"release": "np",
-		"dist-macos": "electron-builder --macos"
+		"dist-macos": "electron-builder --macos",
+		"dist-windows": "electron-builder --windows"
 	},
 	"dependencies": {
 		"electron-debug": "^3.0.0",
@@ -72,6 +73,10 @@
 				"deb"
 			],
 			"category": "Utility;Engineering"
+		},
+		"win": {
+			"target": "portable",
+			"icon": "build/icon.ico"
 		}
 	}
 }
