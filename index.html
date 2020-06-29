@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<title>Bio Signal Visualizer</title>
-	<link rel="stylesheet" href="index.css">
+	<link rel="stylesheet" href="./static/index.css">
 	<!-- Load in the d3 library -->
 	<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
 </head>
@@ -27,246 +27,244 @@
 		</div>
 		<footer>Copyright Parsons School of Design &copy; 2020</footer>
 	</main>
-</body>
-<script>
-	const {
-		desktopCapturer,
-		ipcRenderer,
-		dialog
-	} = require('electron');
-	const config = require('./config.js');
+	<script>
+		const {
+			desktopCapturer,
+			ipcRenderer
+		} = require('electron');
+		const config = require('./config');
+		const fileUploadDialog = document.querySelector('#drag-n-drop-file-input');
+		let fileSelected = false;
 
+		window.addEventListener('click', () => {
+			// File dialog event on clicking anywhere on screen
+			if (!fileSelected) {
+				fileUploadDialog.click();
+			}
+		});
 
-	const fileUploadDialog = document.querySelector('#drag-n-drop-file-input');
-	let fileSelected = false;
+		// Handle files using file dialog function
+		fileUploadDialog.addEventListener('change', handleFiles, false);
 
-	window.addEventListener('click', (event) => {
-		// file dialog event on clicking anywhere on screen
-		if (!fileSelected) {
-			fileUploadDialog.click();
-		}
-	});
-
-	// handle files using file dialog function
-	fileUploadDialog.addEventListener('change', handleFiles, false);
-
-	function handleFiles() {
-		const f = this.files[0]; /* now you can work with the file list */
-		if (f.type === 'text/csv') {
-			document.querySelector('#drag-n-drop-section').style.display = 'none';
-			loadVisualization(f.path);
-			fileSelected = true;
-		} else {
-			// if not csv file display dialog
-			ipcRenderer.send('showErrorDialog', {
-				'title': 'Invalid file type',
-				'body': 'Please select a CSV file'
-			});
-			fileSelected = false;
-		}
-	}
-
-	document.addEventListener('drop', (event) => {
-		event.preventDefault();
-		event.stopPropagation();
-
-		for (const f of event.dataTransfer.files) {
-			// Using the path attribute to get absolute file path 
-			console.log(f);
+		function handleFiles() {
+			const f = this.files[0]; /* Now you can work with the file list */
 			if (f.type === 'text/csv') {
 				document.querySelector('#drag-n-drop-section').style.display = 'none';
 				loadVisualization(f.path);
 				fileSelected = true;
 			} else {
-				// if not csv file display dialog
+				// If not csv file display dialog
 				ipcRenderer.send('showErrorDialog', {
-					'title': 'Invalid file type',
-					'body': 'Please select a CSV file'
+					title: 'Invalid file type',
+					body: 'Please select a CSV file'
 				});
 				fileSelected = false;
 			}
 		}
-	});
 
-	document.addEventListener('dragover', (e) => {
-		e.preventDefault();
-		e.stopPropagation();
-	});
+		document.addEventListener('drop', (event) => {
+			event.preventDefault();
+			event.stopPropagation();
 
-	function loadVisualization(filePath) {
-		let margin = {
-			top: 140,
-			right: 80,
-			bottom: 100,
-			left: 80
-		};
-		let width = window.innerWidth - margin.left - margin.right; // Use the window's width 
-		let height = window.innerHeight - margin.top - margin.bottom; // Use the window's height
-
-		d3.csv(filePath, function (data) {
-			data.forEach(function (d) {
-				d.iteration = +d.iteration;
-				d.value = +d.value;
-			});
-			let dataset = data;
-
-			// 5. X scale will be iteration count
-			let xScale = d3.scaleLinear()
-				.domain(d3.extent(dataset, d => d.iteration)) // input
-				.range([0, width]); // output
-
-			// 6. Y scale will be value
-			let yScale = d3.scaleLinear()
-				.domain(d3.extent(dataset, d => d.value)) // input 
-				.range([height, 0]); // output 
-
-			// 7. d3's line generator
-			let line = d3.line()
-				.x(function (d, i) {
-					return xScale(d.iteration);
-				}) // set the x values for the line generator
-				.y(function (d) {
-					return yScale(d.value);
-				}) // set the y values for the line generator 
-				.curve(d3.curveMonotoneX) // apply smoothing to the line
-
-			// 1. Add the SVG to the page and employ #2
-			let svg = d3.select('#visualizationWindow').append('svg')
-				.attr('width', width + margin.left + margin.right)
-				.attr('height', height + margin.top + margin.bottom)
-				.attr('id', 'visualizationSVG')
-				.append('g')
-				.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-			// 3. Call the x axis in a group tag
-			svg.append('g')
-				.style('font', '14px times')
-				.attr('class', 'x axis')
-				.attr('transform', 'translate(1,' + height + ')')
-				.call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
-
-			svg.append('text')
-				.attr('transform', 'translate(' + (width / 2) + ' ,' + (height + margin.top / 3) + ')')
-				.style('text-anchor', 'middle')
-				.attr('font-size', '16px')
-				.text(config.get('axisName.x'));
-
-			// 4. Call the y axis in a group tag
-			svg.append('g')
-				.style('font', '14px times')
-				.attr('class', 'y axis')
-				.attr('transform', 'translate(1,0)')
-				.attr('font-size', '30px')
-				.call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
-
-			svg.append('text')
-				.attr('transform', 'rotate(-90)')
-				.attr('y', 0 - margin.left * 3 / 4)
-				.attr('x', 0 - ((height) / 2))
-				.attr('dy', '1em')
-				.attr('font-size', '16px')
-				.style('text-anchor', 'middle')
-				.text(config.get('axisName.y'));
-
-			// 9. Append the path, bind the data, and call the line generator 
-			svg.append('path')
-				.attr('font-size', '30px')
-				.datum(dataset) // 10. Binds data to the line 
-				.attr('class', 'line') // Assign a class for styling 
-				.style('stroke', config.get('strokeColor'))
-				.style('stroke-width', config.get('strokeWidth'))
-				.attr('d', line); // 11. Calls the line generator 
-		});
-	}
-
-	const appScreenshot = (callback, imageFormat) => {
-		const _this = this;
-		this.callback = callback;
-		imageFormat = imageFormat || 'image/jpeg';
-
-		this.handleStream = (stream) => {
-			// Create hidden video tag
-			let video = document.createElement('video');
-			video.style.cssText = 'position:absolute;top:-10000px;left:-10000px;';
-			// Event connected to stream
-			video.onloadedmetadata = function () {
-				// Set video ORIGINAL height (screenshot)
-				video.style.height = this.videoHeight + 'px'; // videoHeight
-				video.style.width = this.videoWidth + 'px'; // videoWidth
-
-				video.play();
-
-				// Create canvas
-				let canvas = document.createElement('canvas');
-				canvas.width = this.videoWidth;
-				canvas.height = this.videoHeight;
-				let ctx = canvas.getContext('2d');
-				// Draw video on canvas
-				ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-				if (_this.callback) {
-					// Save screenshot to jpg - base64
-					_this.callback(canvas.toDataURL(imageFormat));
+			for (const f of event.dataTransfer.files) {
+				// Using the path attribute to get absolute file path 
+				console.log(f);
+				if (f.type === 'text/csv') {
+					document.querySelector('#drag-n-drop-section').style.display = 'none';
+					loadVisualization(f.path);
+					fileSelected = true;
 				} else {
-					console.log('Need callback!');
+					// If not csv file display dialog
+					ipcRenderer.send('showErrorDialog', {
+						title: 'Invalid file type',
+						body: 'Please select a CSV file'
+					});
+					fileSelected = false;
+				}
+			}
+		});
+
+		document.addEventListener('dragover', (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+		});
+
+		function loadVisualization(filePath) {
+			const margin = {
+				top: 140,
+				right: 80,
+				bottom: 100,
+				left: 80
+			};
+			const width = window.innerWidth - margin.left - margin.right; // Use the window's width 
+			const height = window.innerHeight - margin.top - margin.bottom; // Use the window's height
+
+			d3.csv(filePath, function (data) {
+				data.forEach(function (d) {
+					d.iteration = +d.iteration;
+					d.value = +d.value;
+				});
+
+				const dataset = data;
+
+				// 5. X scale will be iteration count
+				const xScale = d3.scaleLinear()
+					.domain(d3.extent(dataset, d => d.iteration)) // Input
+					.range([0, width]); // Output
+
+				// 6. Y scale will be value
+				const yScale = d3.scaleLinear()
+					.domain(d3.extent(dataset, d => d.value)) // Input 
+					.range([height, 0]); // Output 
+
+				// 7. d3's line generator
+				let line = d3.line()
+					.x(function (d, i) {
+						return xScale(d.iteration);
+					}) // Set the x values for the line generator
+					.y(function (d) {
+						return yScale(d.value);
+					}) // Set the y values for the line generator 
+					.curve(d3.curveMonotoneX) // apply smoothing to the line
+
+				// 1. Add the SVG to the page and employ #2
+				let svg = d3.select('#visualizationWindow').append('svg')
+					.attr('width', width + margin.left + margin.right)
+					.attr('height', height + margin.top + margin.bottom)
+					.attr('id', 'visualizationSVG')
+					.append('g')
+					.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+				// 3. Call the x axis in a group tag
+				svg.append('g')
+					.style('font', '14px times')
+					.attr('class', 'x axis')
+					.attr('transform', 'translate(1,' + height + ')')
+					.call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
+
+				svg.append('text')
+					.attr('transform', 'translate(' + (width / 2) + ' ,' + (height + margin.top / 3) + ')')
+					.style('text-anchor', 'middle')
+					.attr('font-size', '16px')
+					.text(config.get('xAxisLabel'));
+
+				// 4. Call the y axis in a group tag
+				svg.append('g')
+					.style('font', '14px times')
+					.attr('class', 'y axis')
+					.attr('transform', 'translate(1,0)')
+					.attr('font-size', '30px')
+					.call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+
+				svg.append('text')
+					.attr('transform', 'rotate(-90)')
+					.attr('y', 0 - margin.left * 3 / 4)
+					.attr('x', 0 - ((height) / 2))
+					.attr('dy', '1em')
+					.attr('font-size', '16px')
+					.style('text-anchor', 'middle')
+					.text(config.get('yAxisLabel'));
+
+				// 9. Append the path, bind the data, and call the line generator 
+				svg.append('path')
+					.attr('font-size', '30px')
+					.datum(dataset) // 10. Binds data to the line 
+					.attr('class', 'line') // Assign a class for styling 
+					.style('stroke', config.get('strokeColor'))
+					.style('stroke-width', config.get('strokeWidth'))
+					.attr('d', line); // 11. Calls the line generator 
+			});
+		}
+
+		const appScreenshot = (callback, imageFormat) => {
+			const _this = this;
+			this.callback = callback;
+			imageFormat = imageFormat || 'image/jpeg';
+
+			this.handleStream = (stream) => {
+				// Create hidden video tag
+				let video = document.createElement('video');
+				video.style.cssText = 'position:absolute;top:-10000px;left:-10000px;';
+				// Event connected to stream
+				video.onloadedmetadata = function () {
+					// Set video ORIGINAL height (screenshot)
+					video.style.height = this.videoHeight + 'px'; // videoHeight
+					video.style.width = this.videoWidth + 'px'; // videoWidth
+
+					video.play();
+
+					// Create canvas
+					let canvas = document.createElement('canvas');
+					canvas.width = this.videoWidth;
+					canvas.height = this.videoHeight;
+					let ctx = canvas.getContext('2d');
+					// Draw video on canvas
+					ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+					if (_this.callback) {
+						// Save screenshot to jpg - base64
+						_this.callback(canvas.toDataURL(imageFormat));
+					} else {
+						console.log('Need callback!');
+					}
+
+					// Remove hidden video tag
+					video.remove();
+
+					try {
+						// Destroy connect to stream
+						stream.getTracks()[0].stop();
+					} catch (e) {}
 				}
 
-				// Remove hidden video tag
-				video.remove();
+				video.srcObject = stream;
+				document.body.appendChild(video);
+			};
 
-				try {
-					// Destroy connect to stream
-					stream.getTracks()[0].stop();
-				} catch (e) {}
-			}
+			this.handleError = function (e) {
+				console.log(e);
+			};
 
-			video.srcObject = stream;
-			document.body.appendChild(video);
-		};
-
-		this.handleError = function (e) {
-			console.log(e);
-		};
-
-		desktopCapturer.getSources({
-			types: ['window', 'screen']
-		}).then(async sources => {
-			for (const source of sources) {
-				// Filter: main screen
-				if (source.name === document.title) {
-					try {
-						const stream = await navigator.mediaDevices.getUserMedia({
-							audio: false,
-							video: {
-								mandatory: {
-									chromeMediaSource: 'desktop',
-									chromeMediaSourceId: source.id,
-									minWidth: 1280,
-									maxWidth: 4000,
-									minHeight: 720,
-									maxHeight: 4000
+			desktopCapturer.getSources({
+				types: ['window', 'screen']
+			}).then(async sources => {
+				for (const source of sources) {
+					// Filter: main screen
+					if (source.name === document.title) {
+						try {
+							const stream = await navigator.mediaDevices.getUserMedia({
+								audio: false,
+								video: {
+									mandatory: {
+										chromeMediaSource: 'desktop',
+										chromeMediaSourceId: source.id,
+										minWidth: 1280,
+										maxWidth: 4000,
+										minHeight: 720,
+										maxHeight: 4000
+									}
 								}
-							}
-						});
+							});
 
-						_this.handleStream(stream);
-					} catch (e) {
-						_this.handleError(e);
+							_this.handleStream(stream);
+						} catch (error) {
+							_this.handleError(error);
+						}
 					}
 				}
-			}
+			});
+		};
+
+		const save2File = base64Data => {
+			const img = base64Data;
+			const data = img.replace(/^data:image\/\w+;base64,/, '');
+			ipcRenderer.send('ssBase64', data);
+		};
+
+		ipcRenderer.on('exportScreenshot', () => {
+			appScreenshot(save2File, 'image/jpeg');
 		});
-	}
-
-	const save2File = (base64Data) => {
-		const img = base64Data;
-		const data = img.replace(/^data:image\/\w+;base64,/, "");
-		ipcRenderer.send('ssBase64', data);
-	}
-	ipcRenderer.on('exportScreenshot', (event, args) => {
-		appScreenshot(save2File, 'image/jpeg');
-	});
-
-</script>
+	</script>
+</body>
 
 </html>

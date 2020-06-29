@@ -17,7 +17,6 @@ const {
 const unhandled = require('electron-unhandled');
 const debug = require('electron-debug');
 const contextMenu = require('electron-context-menu');
-// X const config = require('./config');
 const menu = require('./menu');
 const fs = require('fs');
 
@@ -48,6 +47,7 @@ let mainWindow;
 const createMainWindow = async () => {
 	const win = new BrowserWindow({
 		title: app.name,
+		titleBarStyle: 'hiddenInset',
 		show: false,
 		width: w,
 		height: h,
@@ -55,7 +55,7 @@ const createMainWindow = async () => {
 		minWidth: 800,
 		fullscreenable: true,
 		webPreferences: {
-			devTools: true,
+			devTools: false,
 			enableRemoteModule: true,
 			nodeIntegration: true
 		}

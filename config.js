@@ -6,10 +6,7 @@ module.exports = new Store({
 	defaults: {
 		strokeColor: '#ff0000',
 		strokeWidth: '3',
-		axisName: {
-			x: 'x-axis',
-			y: 'y-axis'
-		}
+		xAxisLabel: 'x-axis',
+		yAxisLabel: 'y-axis'
 	}
 });
-

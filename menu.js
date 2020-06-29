@@ -1,13 +1,11 @@
 'use strict';
 const path = require('path');
-
 const {
 	app,
 	Menu,
 	shell,
 	BrowserWindow
 } = require('electron');
-
 const {
 	is,
 	appMenu,
@@ -17,13 +15,26 @@ const {
 	debugInfo
 } = require('electron-util');
 const config = require('./config');
-
 const showPreferences = () => {
-	// Show the app's preferences here
-	// Preferences are -
-	// Change line color
-	// Change line stroke width
-	// Define axis name: x-axis and y-axis
+	const htmlPath = path.join(__dirname, 'preferences.html');
+	const prefWindow = new BrowserWindow({
+		width: 500,
+		height: 330,
+		resizable: false,
+		alwaysOnTop: true,
+		fullscreenable: false,
+		maximizable: false,
+		minimizable: false,
+		skipTaskbar: true,
+		enableLargerThanScreen: false,
+		titleBarStyle: 'hiddenInset',
+		webPreferences: {
+			nodeIntegration: true,
+			enableRemoteModule: true
+		}
+	});
+	prefWindow.loadFile(htmlPath);
+	prefWindow.show();
 };
 
 const generateNewCanvas = () => {
@@ -145,9 +156,6 @@ const macosTemplate = [
 		}]
 	},
 	{
-		role: 'editMenu'
-	},
-	{
 		role: 'windowMenu'
 	},
 	{
@@ -192,9 +200,6 @@ const otherTemplate = [{
 	{
 		role: 'quit'
 	}]
-},
-{
-	role: 'editMenu'
 },
 {
 	role: 'help',

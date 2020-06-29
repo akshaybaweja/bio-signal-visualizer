@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Preferences</title>
+	<link rel="stylesheet" href="./static/index.css">
+</head>
+
+<body>
+	<div class="container">
+		<div id="content">
+            <h4 style="text-align: center; padding-top: 5px;">Preferences</h4>
+            <hr class="my-2">
+			<form action="" class="top-spacer-8">
+				<div class="form-group">
+					<label class="control-label">Visual Settings</label>
+					<div class="form-group row">
+						<div class="input-group column">
+							<div class="input-group-prepend">
+								<span class="input-group-text">Stroke Color</span>
+							</div>
+							<input type="text" class="form-control" name="strokeColor" aria-label="Enter HEX Value" value="#FF0000">
+                        </div>
+                        <div class="input-group column">
+							<div class="input-group-prepend">
+								<span class="input-group-text">Stroke Width</span>
+							</div>
+							<input type="text" class="form-control" name="strokeWidth" aria-label="Enter Integer Value" value="3">
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">Plot Settings</label>
+					<div class="form-group row">
+						<div class="input-group column">
+							<div class="input-group-prepend">
+								<span class="input-group-text">X-Axis Text</span>
+							</div>
+							<input type="text" class="form-control" name="xAxisLabel" aria-label="X Axis Label" value="X-Axis">
+                        </div>
+                        <div class="input-group column">
+							<div class="input-group-prepend">
+								<span class="input-group-text">Y-Axis Text</span>
+							</div>
+							<input type="text" class="form-control" name="yAxisLabel" aria-label="Y Axis Label" value="Y-Axis">
+						</div>
+					</div>
+				</div>
+				<div class="form-group preferences-footer">
+                    <button type="button" id="resetDefaultValues" class="btn btn-primary mr-1">Reset</button>
+                    <button type="button" id="saveValues" class="btn btn-success">Save</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script src="preferences.js"></script>
+</body>
+
+</html>
