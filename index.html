@@ -35,7 +35,7 @@
 		const config = require('./config');
 		const fileUploadDialog = document.querySelector('#drag-n-drop-file-input');
 		let fileSelected = false;
-
+		const re = /(?:\.([^.]+))?$/;
 		window.addEventListener('click', () => {
 			// File dialog event on clicking anywhere on screen
 			if (!fileSelected) {
@@ -48,7 +48,7 @@
 
 		function handleFiles() {
 			const f = this.files[0]; /* Now you can work with the file list */
-			if (f.type === 'text/csv') {
+			if (re.exec(f.path)[1] === 'csv') {
 				document.querySelector('#drag-n-drop-section').style.display = 'none';
 				loadVisualization(f.path);
 				fileSelected = true;
@@ -68,8 +68,7 @@
 
 			for (const f of event.dataTransfer.files) {
 				// Using the path attribute to get absolute file path 
-				console.log(f);
-				if (f.type === 'text/csv') {
+				if (re.exec(f.path)[1] === 'csv') {
 					document.querySelector('#drag-n-drop-section').style.display = 'none';
 					loadVisualization(f.path);
 					fileSelected = true;
